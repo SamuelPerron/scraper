@@ -146,6 +146,15 @@ class Prospect:
 
     def save_to_file(self):
         url = f"findings/{datetime.now().strftime('%y-%m-%d')}--{self.source}.csv"
+        new_file = False
+        with open(url) as f:
+            r = csv.DictReader(f)
+            if len(list(r)) == 0:
+                new_file = True
+
         with open(url, 'a+') as f:
             w = csv.writer(f)
-            w.writerow([self.name, self.keywords, self.region, self.address, self.phone, self.website])
+            if new_file:
+                w.writerow(['name', 'keywords', 'region', 'address', 'phone', 'website'])
+                new_file = False
+            w.writerow([self.name, ','.join(self.keywords), self.region, self.address, self.phone, self.website])
